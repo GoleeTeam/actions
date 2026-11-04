@@ -21,7 +21,13 @@ if [ "$platform" = "gke" ]; then
     cluster="gle-$environment"
     namespace="$environment"
     gcloud container clusters get-credentials $cluster --zone=$region
+
+    # cronjob(s)
+    kubectl set image cronjob -l application=$service $service=$image_path --namespace=$namespace
+
+    # service(s): fixed (name-based) and dynamic (label-based) deployments
     kubectl set image deployment $service $service=$image_path --namespace=$namespace
+    kubectl set image deployment -l application=$service $service=$image_path --namespace=$namespace
     kubectl rollout status deployment/$service --namespace=$namespace --timeout=300s
 elif [ "$platform" = "cloud-run" ]; then
     echo "Deploy, platform: $platform"
