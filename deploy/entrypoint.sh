@@ -25,9 +25,12 @@ if [ "$platform" = "gke" ]; then
     # cronjob(s)
     kubectl set image cronjob -l application=$service $service=$image_path --namespace=$namespace
 
-    # service(s): fixed (name-based) and dynamic (label-based) deployments
-    kubectl set image deployment $service $service=$image_path --namespace=$namespace
+    # service(s): dynamic (label-based) deployments
     kubectl set image deployment -l application=$service $service=$image_path --namespace=$namespace
+    kubectl rollout status deployment -l application=$service --namespace=$namespace --timeout=300s
+    
+    # service(s): fixed (name-based) - to be dismissed
+    kubectl set image deployment $service $service=$image_path --namespace=$namespace
     kubectl rollout status deployment/$service --namespace=$namespace --timeout=300s
 elif [ "$platform" = "cloud-run" ]; then
     echo "Deploy, platform: $platform"
