@@ -37,6 +37,11 @@ elif [ "$platform" = "cloud-run" ]; then
 
     cloud_run_service="$service-$environment"
     gcloud run deploy $cloud_run_service --image=$image_path --region=$region
+elif [ "$platform" = "cloud-run-job" ]; then
+    echo "Deploy, platform: $platform"
+
+    cloud_run_job="$service-$environment"
+    gcloud run jobs update $cloud_run_job --image=$image_path --region=$region
 else
     echo "Unsupported platform: $platform"
     exit 1
