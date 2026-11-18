@@ -5,7 +5,7 @@ inputs:
     description: "Docker image"
     required: true
   platform:
-    description: "Platform. Supported: gke, cloud-run, cloud-run-job"
+    description: "Platform. Supported: gke, cloud-run"
     required: true
   repository:
     description: "Repository URL"

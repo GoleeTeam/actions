@@ -35,13 +35,14 @@ if [ "$platform" = "gke" ]; then
 elif [ "$platform" = "cloud-run" ]; then
     echo "Deploy, platform: $platform"
 
-    cloud_run_service="$service-$environment"
-    gcloud run deploy $cloud_run_service --image=$image_path --region=$region
-elif [ "$platform" = "cloud-run-job" ]; then
-    echo "Deploy, platform: $platform"
-
-    cloud_run_job="$service-$environment"
-    gcloud run jobs update $cloud_run_job --image=$image_path --region=$region
+    cloud_run_name="$service-$environment"
+    if gcloud run services describe $cloud_run_name --region=$region >/dev/null 2>&1; then
+        # service
+        gcloud run deploy $cloud_run_name --image=$image_path --region=$region
+    else
+        # job
+        gcloud run jobs deploy $cloud_run_name --image=$image_path --region=$region
+    fi
 else
     echo "Unsupported platform: $platform"
     exit 1
